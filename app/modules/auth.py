@@ -11,13 +11,29 @@ SCOPES = [
     'https://www.googleapis.com/auth/calendar.readonly'
 ]
 
+def get_client_config():
+    """Create client config from environment variables"""
+    return {
+        "installed": {
+            "client_id": os.getenv('GOOGLE_CLIENT_ID'),
+            "client_secret": os.getenv('GOOGLE_CLIENT_SECRET'),
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "redirect_uris": ["http://localhost:5000/auth/callback"]
+        }
+    }
+
 def authenticate_google():
     """Generate Google OAuth2 authentication URL"""
     client_id = os.getenv('GOOGLE_CLIENT_ID')
     client_secret = os.getenv('GOOGLE_CLIENT_SECRET')
     
-    flow = Flow.from_client_secrets_file(
-        'credentials.json',  # Download from Google Cloud Console
+    if not client_id or not client_secret:
+        raise ValueError("GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set in .env file")
+    
+    flow = Flow.from_client_config(
+        get_client_config(),
         scopes=SCOPES,
         redirect_uri='http://localhost:5000/auth/callback'
     )
@@ -32,8 +48,8 @@ def authenticate_google():
 def get_user_info(code):
     """Exchange authorization code for user credentials and info"""
     try:
-        flow = Flow.from_client_secrets_file(
-            'credentials.json',
+        flow = Flow.from_client_config(
+            get_client_config(),
             scopes=SCOPES,
             redirect_uri='http://localhost:5000/auth/callback'
         )

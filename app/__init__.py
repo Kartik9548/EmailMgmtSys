@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from flask_session import Session
 import os
 
@@ -18,5 +18,10 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(email_bp)
     app.register_blueprint(calendar_bp)
+    
+    # Root route
+    @app.route('/')
+    def root():
+        return redirect(url_for('email.index'))
     
     return app
