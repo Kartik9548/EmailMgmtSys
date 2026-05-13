@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Management System - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <h1>📧 Email Management System</h1>
+            <p class="subtitle">Organize Your Emails & Calendar</p>
+            
+            <div class="login-features">
+                <ul>
+                    <li>✓ Send and Receive Emails</li>
+                    <li>✓ Organize with Folders</li>
+                    <li>✓ Search Functionality</li>
+                    <li>✓ Manage Calendar Events</li>
+                    <li>✓ Email Templates</li>
+                    <li>✓ Attachment Support</li>
+                </ul>
+            </div>
+
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-large">
+                🔐 Login with Google
+            </a>
+
+            <p class="login-note">
+                We use your Google account to securely manage your emails and calendar.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

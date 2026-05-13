@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Compose - Email Management System{% endblock %}
+
+{% block content %}
+<div class="compose-container">
+    <h1>✉️ Compose Email</h1>
+
+    <form id="composeForm" method="POST" class="compose-form">
+        <div class="form-group">
+            <label for="to">To:</label>
+            <input type="email" id="to" name="to" required placeholder="recipient@example.com">
+        </div>
+
+        <div class="form-group">
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject" required placeholder="Email subject">
+        </div>
+
+        <div class="form-group">
+            <label for="body">Message:</label>
+            <textarea id="body" name="body" required placeholder="Compose your message here..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="attachments">Attachments:</label>
+            <input type="file" id="attachments" name="attachments" multiple>
+            <small>You can attach multiple files</small>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Send Email</button>
+            <button type="reset" class="btn btn-secondary">Clear</button>
+            <a href="{{ url_for('email.drafts') }}" class="btn btn-outline">Save as Draft</a>
+        </div>
+    </form>
+
+    <!-- Email Templates -->
+    <div class="templates-section">
+        <h2>Email Templates</h2>
+        <div class="templates-grid">
+            <div class="template-card" data-template="greeting">
+                <h3>Greeting</h3>
+                <p>Professional greeting template</p>
+                <button class="btn btn-small" onclick="loadTemplate('greeting')">Use</button>
+            </div>
+            <div class="template-card" data-template="follow-up">
+                <h3>Follow-up</h3>
+                <p>Follow-up email template</p>
+                <button class="btn btn-small" onclick="loadTemplate('follow-up')">Use</button>
+            </div>
+            <div class="template-card" data-template="support">
+                <h3>Support Request</h3>
+                <p>Support request template</p>
+                <button class="btn btn-small" onclick="loadTemplate('support')">Use</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .compose-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .compose-form {
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-group input[type="email"],
+    .form-group input[type="text"],
+    .form-group textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+
+    .form-group textarea {
+        min-height: 300px;
+        resize: vertical;
+    }
+
+    .form-group small {
+        display: block;
+        margin-top: 0.25rem;
+        color: #999;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .templates-section {
+        border-top: 2px solid #eee;
+        padding-top: 2rem;
+    }
+
+    .templates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .template-card {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 1rem;
+        transition: all 0.3s;
+    }
+
+    .template-card:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+    }
+
+    .template-card h3 {
+        margin: 0 0 0.5rem 0;
+        color: #0066cc;
+    }
+
+    .template-card p {
+        margin: 0 0 1rem 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .btn-small {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+</style>
+
+<script>
+    function loadTemplate(templateType) {
+        const templates = {
+            'greeting': {
+                subject: 'Hello',
+                body: 'Hi,\n\nI hope this email finds you well.\n\nBest regards'
+            },
+            'follow-up': {
+                subject: 'Follow-up',
+                body: 'Hi,\n\nI wanted to follow up on our previous conversation.\n\nBest regards'
+            },
+            'support': {
+                subject: 'Support Request',
+                body: 'Hi Support Team,\n\nI need assistance with...\n\nThank you'
+            }
+        };
+
+        const template = templates[templateType];
+        if (template) {
+            document.getElementById('subject').value = template.subject;
+            document.getElementById('body').value = template.body;
+        }
+    }
+
+    document.getElementById('composeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(e.target);
+        
+        try {
+            const response = await fetch('{{ url_for("email.compose") }}', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                alert('Email sent successfully!');
+                e.target.reset();
+                window.location.href = '{{ url_for("email.sent") }}';
+            } else {
+                alert('Error: ' + data.error);
+            }
+        } catch (error) {
+            alert('Error sending email: ' + error);
+        }
+    });
+</script>
+{% endblock %}

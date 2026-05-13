@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Email Management System{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <h1>Welcome, {{ user.email }}!</h1>
+    
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <h2>📥 Inbox</h2>
+            <p>Manage your incoming emails</p>
+            <a href="{{ url_for('email.inbox') }}" class="btn btn-secondary">View Inbox</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>✉️ Compose</h2>
+            <p>Write and send new emails</p>
+            <a href="{{ url_for('email.compose') }}" class="btn btn-secondary">Compose Email</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>📤 Sent</h2>
+            <p>View your sent emails</p>
+            <a href="{{ url_for('email.sent') }}" class="btn btn-secondary">View Sent</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>📝 Drafts</h2>
+            <p>Continue editing drafts</p>
+            <a href="{{ url_for('email.drafts') }}" class="btn btn-secondary">View Drafts</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>📅 Calendar</h2>
+            <p>Manage your events</p>
+            <a href="{{ url_for('calendar.events') }}" class="btn btn-secondary">View Calendar</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>🔍 Search</h2>
+            <p>Find specific emails</p>
+            <form method="GET" action="{{ url_for('email.search') }}" class="search-form">
+                <input type="text" name="q" placeholder="Search emails..." required>
+                <button type="submit" class="btn btn-secondary">Search</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard {
+        padding: 2rem;
+    }
+
+    .dashboard h1 {
+        margin-bottom: 2rem;
+        color: #333;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .dashboard-card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .dashboard-card h2 {
+        color: #0066cc;
+        margin-bottom: 0.5rem;
+    }
+
+    .dashboard-card p {
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    .search-form {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .search-form input {
+        flex: 1;
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}

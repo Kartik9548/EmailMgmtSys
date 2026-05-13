@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Calendar - Email Management System{% endblock %}
+
+{% block content %}
+<div class="calendar-container">
+    <h1>📅 Calendar</h1>
+
+    <div class="calendar-content">
+        <div id="calendar" class="calendar"></div>
+        
+        <div class="events-list">
+            <h2>Upcoming Events</h2>
+            {% if events %}
+                {% for event in events %}
+                <div class="event-card">
+                    <div class="event-time">
+                        <strong>{{ event.start }}</strong>
+                    </div>
+                    <div class="event-details">
+                        <h3>{{ event.summary }}</h3>
+                        {% if event.location %}
+                        <p>📍 {{ event.location }}</p>
+                        {% endif %}
+                        {% if event.description %}
+                        <p>{{ event.description }}</p>
+                        {% endif %}
+                        {% if event.attendees %}
+                        <p>👥 Attendees: {{ event.attendees|join(', ') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <p>No upcoming events</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .calendar-container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .calendar-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .calendar {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        min-height: 500px;
+    }
+
+    .events-list {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1.5rem;
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .events-list h2 {
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    .event-card {
+        border-left: 4px solid #0066cc;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background: #f9f9f9;
+        border-radius: 4px;
+        transition: all 0.3s;
+    }
+
+    .event-card:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .event-time {
+        font-size: 0.85rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+    }
+
+    .event-details h3 {
+        margin: 0 0 0.5rem 0;
+        color: #0066cc;
+    }
+
+    .event-details p {
+        margin: 0.25rem 0;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: #999;
+    }
+
+    @media (max-width: 768px) {
+        .calendar-content {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    // Fetch and update calendar events
+    async function loadEvents() {
+        try {
+            const response = await fetch('{{ url_for("calendar.api_events") }}');
+            const events = await response.json();
+            updateCalendarDisplay(events);
+        } catch (error) {
+            console.error('Error loading events:', error);
+        }
+    }
+
+    function updateCalendarDisplay(events) {
+        console.log('Events:', events);
+        // This can be extended with a calendar library like FullCalendar
+    }
+
+    // Load events on page load
+    document.addEventListener('DOMContentLoaded', loadEvents);
+</script>
+{% endblock %}

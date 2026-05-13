@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Emails - Email Management System{% endblock %}
+
+{% block content %}
+<div class="emails-container">
+    <div class="emails-header">
+        <h1>{{ folder }} Emails</h1>
+        {% if search_query %}
+        <p>Search results for: "{{ search_query }}"</p>
+        {% endif %}
+    </div>
+
+    {% if emails %}
+    <div class="email-list">
+        {% for email in emails %}
+        <div class="email-item">
+            <div class="email-checkbox">
+                <input type="checkbox" class="email-select">
+            </div>
+            <div class="email-content">
+                <div class="email-header">
+                    <strong class="email-from">{{ email.from }}</strong>
+                    <span class="email-date">{{ email.date }}</span>
+                </div>
+                <div class="email-subject">
+                    <a href="{{ url_for('email.view_email', email_id=email.id) }}">
+                        {{ email.subject }}
+                    </a>
+                </div>
+                <div class="email-snippet">
+                    {{ email.snippet[:150] }}...
+                </div>
+                {% if email.attachments %}
+                <div class="email-attachments">
+                    📎 {{ email.attachments|length }} attachment(s)
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No emails found.</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .emails-container {
+        padding: 2rem;
+    }
+
+    .emails-header h1 {
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .emails-header p {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .email-list {
+        margin-top: 1.5rem;
+    }
+
+    .email-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        background: white;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s;
+    }
+
+    .email-item:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .email-checkbox {
+        display: flex;
+        align-items: flex-start;
+        padding-top: 0.25rem;
+    }
+
+    .email-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .email-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .email-from {
+        color: #333;
+    }
+
+    .email-date {
+        font-size: 0.85rem;
+        color: #999;
+    }
+
+    .email-subject a {
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .email-subject a:hover {
+        text-decoration: underline;
+    }
+
+    .email-snippet {
+        color: #666;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .email-attachments {
+        font-size: 0.85rem;
+        color: #999;
+        margin-top: 0.5rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #999;
+    }
+</style>
+{% endblock %}
