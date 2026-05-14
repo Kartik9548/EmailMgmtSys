@@ -8,39 +8,99 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    {% if user %}
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">📧 Email Manager</div>
-            <div class="nav-menu">
-                <a href="{{ url_for('email.dashboard') }}" class="nav-link">Dashboard</a>
-                <a href="{{ url_for('email.inbox') }}" class="nav-link">Inbox</a>
-                <a href="{{ url_for('email.compose') }}" class="nav-link">Compose</a>
-                <a href="{{ url_for('calendar.events') }}" class="nav-link">Calendar</a>
-                <span class="nav-user">{{ user.email }}</span>
-                <a href="{{ url_for('auth.logout') }}" class="nav-link logout">Logout</a>
+    <div class="app-container">
+        {% if user %}
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">📧 Outlook</div>
             </div>
-        </div>
-    </nav>
-    {% endif %}
 
-    <div class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">
-                    {{ message }}
+            <button class="compose-btn" onclick="window.location.href='{{ url_for('email.compose') }}'">
+                <span class="icon">✏️</span>
+                <span>Compose</span>
+            </button>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+
+                    <a href="{{ url_for('email.inbox') }}" class="nav-item active">
+                        <span class="icon">📥</span>
+                        <span>Inbox</span>
+                    </a>
+                    <a href="{{ url_for('email.sent') }}" class="nav-item">
+                        <span class="icon">📤</span>
+                        <span>Sent</span>
+                    </a>
+                    <a href="{{ url_for('email.drafts') }}" class="nav-item">
+                        <span class="icon">📝</span>
+                        <span>Drafts</span>
+                    </a>
                 </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
 
-        {% block content %}{% endblock %}
+                <div class="nav-section">
+                    <a href="{{ url_for('calendar.events') }}" class="nav-item">
+                        <span class="icon">📅</span>
+                        <span>Calendar</span>
+                    </a>
+                    <a href="{{ url_for('email.dashboard') }}" class="nav-item">
+                        <span class="icon">🏠</span>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">{{ user.email[0].upper() }}</div>
+                    <div class="user-details">
+                        <div class="user-email">{{ user.email }}</div>
+                        <small>Account</small>
+                    </div>
+                </div>
+                <a href="{{ url_for('auth.logout') }}" class="logout-btn">🚪 Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="top-bar">
+                <div class="search-bar">
+                    <input type="text" placeholder="🔍 Search emails..." class="search-input">
+                </div>
+                <div class="top-actions">
+                    <button class="icon-btn">⚙️</button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        {% else %}
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        {% endif %}
     </div>
-
-    <footer class="footer">
-        <p>&copy; 2026 Email Management System. All rights reserved.</p>
-    </footer>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block extra_js %}{% endblock %}
