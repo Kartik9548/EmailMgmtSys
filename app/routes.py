@@ -50,6 +50,8 @@ def index():
 def dashboard():
     return render_template('dashboard.html', user=session.get('user'))
 
+
+
 @email_bp.route('/inbox')
 @login_required
 def inbox():
